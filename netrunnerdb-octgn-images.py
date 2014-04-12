@@ -10,7 +10,7 @@ def download_netrunnerdb_images(octgn_path_map):
 			#print(page_url)
 			u = None
 			try:
-				for retry in range(10):
+				for retry in range(3):
 					if retry > 0:
 						print("Retrying...")
 					try:
@@ -24,6 +24,11 @@ def download_netrunnerdb_images(octgn_path_map):
 					return
 				else:
 					break
+			if not u:
+				if card_name == 1:
+					return
+				else:
+					break
 			hp = html.parser.HTMLParser()
 			page = hp.unescape(u.read().decode("utf-8"))
 			#print(page)
@@ -33,6 +38,12 @@ def download_netrunnerdb_images(octgn_path_map):
 				#print(card_name)
 				ascii_card_name = unidecode.unidecode(card_name)
 				#print(ascii_card_name)
+				card_name_fixups = {
+					"Melange Mining Corp." : "Melange Mining Corp"
+				}
+				fixed = card_name_fixups.get(ascii_card_name)
+				if fixed:
+					ascii_card_name = fixed
 				octgn_path = octgn_path_map.get(ascii_card_name.lower())
 				if octgn_path:
 					#print("-> " + octgn_path)
@@ -40,7 +51,7 @@ def download_netrunnerdb_images(octgn_path_map):
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(card_name, img_url, octgn_path))
 					u = None
-					for retry in range(10):
+					for retry in range(3):
 						if retry > 0:
 							print("Retrying...")
 						try:
