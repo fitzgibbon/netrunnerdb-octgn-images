@@ -39,6 +39,7 @@ def download_netrunnerdb_images(octgn_path_map):
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(card_name, img_url, octgn_path))
+					u = None
 					for retry in range(10):
 						if retry > 0:
 							print("Retrying...")
