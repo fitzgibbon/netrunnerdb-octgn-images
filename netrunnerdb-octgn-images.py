@@ -27,7 +27,16 @@ def download_netrunnerdb_images(octgn_path_map):
 		for card_num in range(1, 200):
 			page_url = "http://netrunnerdb.com/en/card/{:02d}{:03d}".format(set_num, card_num)
 			#print(page_url)
-			content = get_url(page_url)
+			cache_path_page = "cache/{:02d}{:03d}".format(set_num, card_num)
+			content = None
+			if os.path.exists(cache_path_page):
+				content = open(cache_path_page, "rb").read()
+			else:
+				content = get_url(page_url)
+				if content:
+					if not os.path.exists("cache"):
+						os.makedirs("cache")
+					open(cache_path_page, "wb").write(content)
 			if not content:
 				if card_num == 1:
 					return
@@ -55,7 +64,16 @@ def download_netrunnerdb_images(octgn_path_map):
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(ascii_card_name, img_url, octgn_path))
-					content = get_url(img_url)
+					cache_path_img = "cache/{:02d}{:03d}.png".format(set_num, card_num)
+					content = None
+					if os.path.exists(cache_path_img):
+						content = open(cache_path_img, "rb").read()
+					else:
+						content = get_url(img_url)
+						if content:
+							if not os.path.exists("cache"):
+								os.makedirs("cache")
+							open(cache_path_img, "wb").write(content)
 					if content:
 						open(octgn_path, "wb").write(content)
 				else:
