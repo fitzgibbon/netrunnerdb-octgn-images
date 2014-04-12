@@ -9,7 +9,7 @@ def download_netrunnerdb_images(octgn_path_map):
 			page_url = "http://netrunnerdb.com/en/card/{:02d}{:03d}".format(set_num, card_num)
 			#print(page_url)
 			try:
-				u = urllib.request.urlopen(page_url)
+				u = urllib.request.urlopen(page_url, timeout=10)
 			except urllib.request.HTTPError:
 				if card_num == 1:
 					return
@@ -30,7 +30,7 @@ def download_netrunnerdb_images(octgn_path_map):
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(card_name, img_url, octgn_path))
-					u = urllib.request.urlopen(img_url)
+					u = urllib.request.urlopen(img_url, timeout=60)
 					open(octgn_path, "wb").write(u.read())
 				else:
 					#print("-> *** No matching OCTGN path. ***")
