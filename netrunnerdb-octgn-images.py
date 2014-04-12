@@ -2,35 +2,39 @@ import sys, os, argparse, re, pathlib, urllib.request, html.parser
 import xml.etree.ElementTree as et
 import unidecode
 
+def get_url(url):
+	content = None
+	try:
+		for retry in range(3):
+			if retry > 0:
+				print("Retrying...")
+			try:
+				u = urllib.request.urlopen(url, timeout=30)
+			except urllib.error.URLError:
+				continue
+			try:
+				content = u.read()
+			except:
+				continue
+			break
+	except urllib.request.HTTPError:
+		return None
+	return content
+
 def download_netrunnerdb_images(octgn_path_map):
 	p_cardname = re.compile(r"class=\"card-title\">(.+)<\/a>")
 	for set_num in range(1, 10):
 		for card_num in range(1, 200):
 			page_url = "http://netrunnerdb.com/en/card/{:02d}{:03d}".format(set_num, card_num)
 			#print(page_url)
-			u = None
-			try:
-				for retry in range(4):
-					if retry > 0:
-						print("Retrying...")
-					try:
-						u = urllib.request.urlopen(page_url, timeout=10)
-					except urllib.error.URLError:
-						continue
-					if u:
-						break
-			except urllib.request.HTTPError:
+			content = get_url(page_url)
+			if not content:
 				if card_num == 1:
 					return
 				else:
 					break
-			if not u:
-				if card_name == 1:
-					return
-				else:
-					break
 			hp = html.parser.HTMLParser()
-			page = hp.unescape(u.read().decode("utf-8"))
+			page = hp.unescape(content.decode("utf-8"))
 			#print(page)
 			m = p_cardname.search(page)
 			if m and m.group(1):
@@ -50,17 +54,9 @@ def download_netrunnerdb_images(octgn_path_map):
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(ascii_card_name, img_url, octgn_path))
-					u = None
-					for retry in range(4):
-						if retry > 0:
-							print("Retrying...")
-						try:
-							u = urllib.request.urlopen(img_url, timeout=10)
-						except urllib.error.URLError:
-							continue
-						if u:
-							break
-					open(octgn_path, "wb").write(u.read())
+					content = get_url(img_url)
+					if content:
+						open(octgn_path, "wb").write(content)
 				else:
 					#print("-> *** No matching OCTGN path. ***")
 					print("No OCTGN card path found for ASCII conversion: {:s}, URL: {:s}".format(ascii_card_name, page_url), file=sys.stderr)
