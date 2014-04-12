@@ -102,7 +102,7 @@ def get_octgn_path_map(game_path):
 					for prop in card.iter("property"):
 						if prop.attrib["name"] == "Subtitle":
 							card_subtitle = prop.attrib["value"]
-					card_img_filename = set_path + "/Cards/" + card_id + ".png"
+					card_img_filename = set_path.replace("GameDatabase", "ImageDatabase") + "/Cards/" + card_id + ".png"
 					card_full_name = card_name
 					if card_subtitle:
 						card_full_name += ": " + card_subtitle
@@ -112,7 +112,7 @@ def get_octgn_path_map(game_path):
 def main():
 	"Download and install OCTGN Android: Netrunner card images from netrunnerdb.com."
 	parser = argparse.ArgumentParser(description=main.__doc__)
-	parser.add_argument("game_path", type=str, help="OCTGN Android:Netrunner game folder.")
+	parser.add_argument("game_path", type=str, help="OCTGN Android: Netrunner game folder.")
 	args = parser.parse_args()
 	octgn_path_map = get_octgn_path_map(args.game_path)
 	#print(octgn_path_map)
