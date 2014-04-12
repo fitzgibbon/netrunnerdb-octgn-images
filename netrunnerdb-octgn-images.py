@@ -76,6 +76,7 @@ def download_netrunnerdb_images(octgn_path_map):
 							open(cache_path_img, "wb").write(content)
 					if content:
 						open(octgn_path, "wb").write(content)
+						os.remove(octgn_path.replace(".png", ".jpg"))
 				else:
 					#print("-> *** No matching OCTGN path. ***")
 					print("No OCTGN card path found for ASCII conversion: {:s}, URL: {:s}".format(ascii_card_name, page_url), file=sys.stderr)
