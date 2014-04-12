@@ -10,7 +10,7 @@ def download_netrunnerdb_images(octgn_path_map):
 			#print(page_url)
 			u = None
 			try:
-				for retry in range(3):
+				for retry in range(4):
 					if retry > 0:
 						print("Retrying...")
 					try:
@@ -49,9 +49,9 @@ def download_netrunnerdb_images(octgn_path_map):
 					#print("-> " + octgn_path)
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
-					print("{:s} ({:s} -> {:s})".format(card_name, img_url, octgn_path))
+					print("{:s} ({:s} -> {:s})".format(ascii_card_name, img_url, octgn_path))
 					u = None
-					for retry in range(3):
+					for retry in range(4):
 						if retry > 0:
 							print("Retrying...")
 						try:
@@ -63,7 +63,8 @@ def download_netrunnerdb_images(octgn_path_map):
 					open(octgn_path, "wb").write(u.read())
 				else:
 					#print("-> *** No matching OCTGN path. ***")
-					print("No OCTGN card path found for {:s} (ASCII conversion: {:s}, URL: {:s})".format(card_name, ascii_card_name, page_url), file=sys.stderr)
+					print("No OCTGN card path found for ASCII conversion: {:s}, URL: {:s}".format(ascii_card_name, page_url), file=sys.stderr)
+					print("Original card name: {:s}".format(card_name))
 			else:
 				if card_num == 1:
 					return
