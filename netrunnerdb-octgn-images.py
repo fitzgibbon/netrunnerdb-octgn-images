@@ -8,8 +8,17 @@ def download_netrunnerdb_images(octgn_path_map):
 		for card_num in range(1, 200):
 			page_url = "http://netrunnerdb.com/en/card/{:02d}{:03d}".format(set_num, card_num)
 			#print(page_url)
+			u = None
 			try:
-				u = urllib.request.urlopen(page_url, timeout=10)
+				for retry in range(10):
+					if retry > 0:
+						print("Retrying...")
+					try:
+						u = urllib.request.urlopen(page_url, timeout=10)
+					except urllib.error.URLError:
+						continue
+					if u:
+						break
 			except urllib.request.HTTPError:
 				if card_num == 1:
 					return
@@ -30,7 +39,15 @@ def download_netrunnerdb_images(octgn_path_map):
 					img_url = "http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/{:02d}{:03d}.png".format(set_num, card_num)
 					#print(img_url)
 					print("{:s} ({:s} -> {:s})".format(card_name, img_url, octgn_path))
-					u = urllib.request.urlopen(img_url, timeout=60)
+					for retry in range(10):
+						if retry > 0:
+							print("Retrying...")
+						try:
+							u = urllib.request.urlopen(img_url, timeout=10)
+						except urllib.error.URLError:
+							continue
+						if u:
+							break
 					open(octgn_path, "wb").write(u.read())
 				else:
 					#print("-> *** No matching OCTGN path. ***")
