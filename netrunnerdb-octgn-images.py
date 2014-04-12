@@ -43,7 +43,8 @@ def download_netrunnerdb_images(octgn_path_map):
 				ascii_card_name = unidecode.unidecode(card_name)
 				#print(ascii_card_name)
 				card_name_fixups = {
-					"Melange Mining Corp." : "Melange Mining Corp"
+					"Melange Mining Corp." : "Melange Mining Corp",
+					"NBN: The World is Yours*" : "NBN: The World is Yours"
 				}
 				fixed = card_name_fixups.get(ascii_card_name)
 				if fixed:
