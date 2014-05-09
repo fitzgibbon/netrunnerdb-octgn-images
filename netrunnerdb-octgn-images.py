@@ -4,6 +4,7 @@ import unidecode
 
 def get_url(url):
 	content = None
+	#print("get_url({:s})".format(url))
 	try:
 		for retry in range(3):
 			if retry > 0:
@@ -30,10 +31,13 @@ def download_netrunnerdb_images(octgn_path_map):
 			cache_path_page = "cache/{:02d}{:03d}".format(set_num, card_num)
 			content = None
 			if os.path.exists(cache_path_page):
+				#print("Cache exists at {:s}".format(cache_path_page))
 				content = open(cache_path_page, "rb").read()
 			else:
+				#print("Cache doesn't exist")
 				content = get_url(page_url)
 				if content:
+					#print("Content:\n{:s}".format(content))
 					if not os.path.exists("cache"):
 						os.makedirs("cache")
 					open(cache_path_page, "wb").write(content)
@@ -53,7 +57,9 @@ def download_netrunnerdb_images(octgn_path_map):
 				#print(ascii_card_name)
 				card_name_fixups = {
 					"Melange Mining Corp." : "Melange Mining Corp",
-					"NBN: The World is Yours*" : "NBN: The World is Yours"
+					"NBN: The World is Yours*" : "NBN: The World is Yours",
+					"NeoTokyo Grid" : "NeoTokyo City Grid",
+					"Unregistered S&W '35" : "Unregistered S&W 35"
 				}
 				fixed = card_name_fixups.get(ascii_card_name)
 				if fixed:
@@ -107,7 +113,7 @@ def get_octgn_path_map(game_path):
 						if prop.attrib["name"] == "Subtitle":
 							card_subtitle = prop.attrib["value"]
 					card_img_filename = set_path.replace("GameDatabase", "ImageDatabase") + "/Cards/" + card_id + ".png"
-					card_full_name = card_name
+					card_full_name = unidecode.unidecode(card_name)
 					if card_subtitle:
 						card_full_name += ": " + card_subtitle
 					path_map[card_full_name.lower()] = card_img_filename
